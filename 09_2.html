@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>abcde</div>
+<div>abc</div>
+<p>12345</p>
+<input type="text"/>
+</body>
+<script>
+    //文件A
+    (function (window) {
+        var arr=[];
+        var push=arr.push;
+        var splice=arr.splice;
+        var slice=arr.slice;
+
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector) {
+            return document.querySelectorAll(selector);
+        }
+
+
+        function jQuery(selector) {
+
+            return new jQuery.fn.F(selector);
+        }
+
+
+        jQuery.fn=jQuery.prototype = {
+            constructor: jQuery,
+            F: function (selector) {
+                //将this中原有的DOM元素清空
+                splice.call(this,0,this.length);
+
+                //将elements中的每一个DOM元素以伪数组的形式存放在F的实例(this)中
+
+                //elements:{0:div,1:div,2:div,length:3}
+                push.apply(this,Sizzle(selector));
+
+
+                return this;
+            },
+            css: function (styleName, styleValue) {
+                for (var i = 0; i < this.length; i++) {
+                    var ele = this[i];
+                    ele.style[styleName] = styleValue;
+                }
+
+                //实现链式编程
+                return this;
+            }
+        };
+
+        jQuery.fn.extend=jQuery.extend=function(){
+            var target,sources;
+
+            if(arguments.length==0) return this;
+
+            var arg0=arguments[0];
+            if(arguments.length===1){
+                //1、传递一个参数，将参数中的属性和方法分别拷贝到$(this)中
+                target=this;
+                sources=[arg0];
+
+            }else{
+                //2、传递多个参数，将第二个参数及其后面的所有的参数中的属性和方法分别拷贝到第一个参数中
+                target=arg0;
+                sources=slice.call(arguments,1);//sources就保存了第二个以及后面的所有实参
+                
+            }
+
+            //遍历sources
+            for (var i = 0; i < sources.length; i++) {
+                //获取到每一个数据源对象
+                var source = sources[i];
+                //将source中的属性拷贝到target中
+                for (var key in source) {
+                    target[key]=source[key];
+                }
+            }
+            return target;
+
+
+        };
+
+
+        //设置F的原型，指向jquery的原型-->可以让所有的F的实例都可以访问到jquery的原型中的方法
+        jQuery.fn.F.prototype = jQuery.fn;
+
+
+        window.$ = window.jQuery = jQuery;
+
+
+    })(window);
+</script>
+<script src="jquery-combobox.js"></script>
+<script>
+    //1、传递一个参数，将参数中的属性和方法分别拷贝到$中
+    $.extend({a:10,b:20,c:30});//$.a=10 $.b=20 $.c=30
+    //2、传递多个参数，将第二个参数及其后面的所有的参数中的属性和方法分别拷贝到第一个参数中
+    $.extend($,{n1:100},{n2:200},{n3:300,n4:400,n5:500});
+    //  $.n1=100 $.n2=200 $.n3=300 $.n4=400 $.n5=500
+
+
+//    //$.fn.extend
+//    //1、传递一个参数，将参数中的属性和方法分别拷贝到$.fn中
+//    $.fn.extend({a:100,b:200,c:300});//$.fn.a=100
+//
+//    //2、传递多个参数，将第二个参数及其后面的所有的参数中的属性和方法分别拷贝到第一个参数中
+//    $.fn.extend($,{h1:100},{h2:200},{h3:300,h4:400,h5:500});
+
+    //jquery有2大方法，
+    // 一种称之为工具类方法：$.each $.extend $.type $.xxx
+//    $.each=function(){};
+//    $.type=function(){};
+//    $.isString=function(){};
+
+    $.extend({
+        each:function(){},
+        type:function(){},
+        isString:function(){}
+    });
+
+    // 一种称之为DOM操作方法：$.fn.css $.fn.attr $.fn.addClass 。。。
+
+//    $.fn.css=function(){};
+//    $.fn.attr=function(){};
+
+    //CSS模块
+    $.fn.extend({
+        css:function(){},
+        show:function(){},
+        hide:function(){},
+        toggle:function(){}
+    });
+
+    //属性操作模块
+    $.fn.extend({
+        removeAttr:function(){},
+        attr:function(){},
+        addClass:function(){},
+        removeClass:function(){},
+        hasClass:function(){},
+        toggleClass:function(){}
+    });
+</script>
+</html>
