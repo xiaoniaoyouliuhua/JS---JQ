@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div{
+            color:blue;
+        }
+    </style>
+</head>
+<body>
+<div style="color:red">abc</div>
+</body>
+<script src="jq.js"></script>
+<script>
+    //$("div").css("fontSize")-->获取(第一个匹配到div的)字体大小
+    //$("div").css("fontSize","30px")-->设置所有的div单个样式
+    //$("div").css({ color:"red" }) -->设置所有的div的多个样式
+
+    jQuery.fn.extend({
+        css:function(){
+            //参数为1：获取指定样式；设置多个样式
+            //    根据参数类型再来条件判断
+            //参数>1(只处理2个参数)：设置单个样式
+
+            var len=arguments.length;
+            var arg0=arguments[0];
+            var arg1=arguments[1];
+
+            if(len===0) return this;
+
+            if(len==1){
+                //参数为1：获取指定样式；设置多个样式
+                //    根据参数类型再来条件判断
+
+
+                if(jQuery.isString(arg0)){
+                    //arg0是一个样式名称-->$("div").css("fontSize")
+                    //功能：只能获取该F实例中第一个DOM元素的指定样式
+
+                    //this[0]:获取this的0属性，this是F的实例--->this的对象结构：{ 0:div,length:1 }
+                    var firstDom=this[0];
+
+                    //全部样式：
+                    var styles=window.getComputedStyle(firstDom,null);
+
+                    //返回指定样式：
+                    return styles[arg0];
+
+
+                }else{
+                    //arg0是一个对象(对象中包含多个样式)-->$("div").css({ color:"red" })
+                }
+
+
+            }else{
+                //参数>1(只处理2个参数)：设置单个样式  $("div").css("color","red")
+
+                //遍历this从而获取到this中存放的每一个DOM元素
+
+                this.each(function(){
+                    //this:每一个DOM元素
+                    //arguments[0]：元素的索引
+                    //arguments[1]：元素的值：DOM元素
+
+
+                    //dom.style[样式名称]=样式的值
+                    this.style[arg0]=arg1;
+                    //变量搜索原则：arg0/arg1并不是当前作用域声明的，要确定arg0和arg1就要去当前作用域的上一级作用域(就看当前函数写在哪个函数体内部)，发现上一级作用域就是css方法，css方法中声明了arg0和arg1，分别表示样式的名称和样式的值
+                });
+                return this;
+
+            }
+
+        }
+    });
+
+    $("div").css("color","green")
+</script>
+</html>

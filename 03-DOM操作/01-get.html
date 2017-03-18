@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>d1</div>
+<div>d2</div>
+<div>d3</div>
+</body>
+<script src="jq.js"></script>
+<script>
+
+    //$.fn.get方法
+    jQuery.fn.extend({
+        //1、没有参数：返回值是将F的实例转换为真数组
+        //2、有参：
+        //      参数为非负数：直接返回F的实例中指定索引的DOM元素
+        //      参数为负数：返回倒数第几个元素
+        //              $("div").get(-1)-->2
+        //              $("div").get(-2)-->1
+        //              $("div").get(-3)-->0
+        get:function(){
+            if(arguments.length===0){
+                return jQuery.makeArray(this);
+            }else{
+                var arg0=arguments[0];
+                if(arg0>=0){
+                    //arg0就是元素的索引
+                    return this[arg0];
+                }else{
+                    //arg0是负数：
+                    return this[this.length+arg0];
+                }
+            }
+        }
+    });
+
+    console.log($("div").get());//返回由F的实例中的每一个DOM元素组成的真数组
+    console.log($("div").get(1));//第二个元素
+    console.log($("div").get(-1));//第三个元素
+</script>
+</html>

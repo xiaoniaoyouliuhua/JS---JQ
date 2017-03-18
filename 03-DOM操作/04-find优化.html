@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <input type="text"><span>s1</span><span>s8</span>
+</div>
+<div>
+    <input type="text"><span>s2</span><span>s7</span>
+</div>
+<div>
+    <input type="text"><span>s3</span><span>s6</span>
+</div>
+<span>s4</span>
+<span>s5</span>
+</body>
+<script src="jq.js"></script>
+<script>
+
+    //$.fn.get方法
+    jQuery.fn.extend({
+        //1、没有参数：返回值是将F的实例转换为真数组
+        //2、有参：
+        //      参数为非负数：直接返回F的实例中指定索引的DOM元素
+        //      参数为负数：返回倒数第几个元素
+        //              $("div").get(-1)-->2
+        //              $("div").get(-2)-->1
+        //              $("div").get(-3)-->0
+        get: function () {
+            if (arguments.length === 0) {
+                return jQuery.makeArray(this);
+            } else {
+                var arg0 = arguments[0];
+                if (arg0 >= 0) {
+                    //arg0就是元素的索引
+                    return this[arg0];
+                } else {
+                    //arg0是负数：
+                    return this[this.length + arg0];
+                }
+            }
+        },
+        first: function () {
+            //索引为0的DOM元素
+            var firstDom = this.get(0);
+            //将该DOM元素转换为Jquery对象并返回
+            return jQuery(firstDom);
+        },
+        last: function () {
+//            //最后一个DOM元素
+//            var lastDom=this.get(-1);
+//            //将该DOM元素转换为Jquery对象并返回
+//            return jQuery(lastDom);
+//
+            return jQuery(this.get(-1));
+        },
+        eq: function (index) {
+            //获取指定索引的DOM元素
+            var dom = this.get(index);
+            //将该DOM元素转换为jquery对象
+            return jQuery(dom);
+        },
+        find: function (selector) {
+            //希望查找this中这些DOM元素的下面的符合指定条件的子元素，由这些子元素构成一个jquery对象
+            //$("div").find("span")-->返回由body下面的所有的div标签组成的jquery对象
+
+            var $=jQuery();
+
+            //实现思路：应该需要首先遍历出每一个div；然后遍历出每一个div的子元素
+            this.each(function(){
+                //获取到每一个div
+                var dom=this;
+                //获取dom元素下面的所有的符合条件的DOM元素
+                var children=dom.querySelectorAll(selector);
+                //将child中的每一个元素遍历追加到array中
+                jQuery.merge($,children);
+            });
+
+            //上面的遍历完成之后，array就已经包含了所有的符合条件的子元素
+            //还需要将array转换为jquery对象来返回
+
+            //直接将array转换为jquery对象的方法没有，但是我们可以提前创建一个jquery对象，之后再往该对象中添加元素
+
+            return $;
+        }
+    });
+
+    console.log($("div").find("span"));
+
+</script>
+</html>
