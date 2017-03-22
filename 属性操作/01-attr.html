@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="d1">d1</div>
+<div id="d2">d2</div>
+<div id="d3">d3</div>
+</body>
+<script src="jq.js"></script>
+<script>
+    jQuery.fn.extend({
+        attr:function(){
+            var length=arguments.length;
+            var arg0=arguments[0];
+            var arg1=arguments[1];
+
+            //1、参数个数为0：
+            if(length==0 ) return this;
+
+            //2、参数个数为1；
+            if(length==1){
+                if(jQuery.isString(arg0)){
+                    //2.1、参数是字符串类型：获取第一个DOM元素的指定属性
+                    var firstDom=this.get(0);
+                    //2.2、获取该DOM元素的指定属性：原生JS：dom.getAttribute("属性名称")
+                    return firstDom.getAttribute(arg0);
+
+                }else{
+                    //2.2、参数是其他类型（当成对象来处理） $("div").attr({ tag:10 })
+                    return this.each(function(){
+                        var dom=this;
+                        jQuery.each(arg0,function(attrName,attrValue){
+                            dom.setAttribute(attrName,attrValue);
+                        })
+                    })
+                }
+
+
+
+            }else{
+                //3、参数个数>1：-->设置单个属性 $("div").attr("tag","10")
+                return this.each(function(){
+                    var dom=this;
+                    dom.setAttribute(arg0,arg1);
+                });
+            }
+
+
+        }
+    });
+
+    console.log($("div").attr("id"));//"d1"
+    $("div").attr("tag",100);
+    $("div").attr("tag2","abc");
+
+</script>
+</html>

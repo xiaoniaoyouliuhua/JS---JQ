@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+//名称：HTML事件绑定
+
+//简单粗暴的javascript代码
+<input type="button" value="旧石器点击我" onclick="alert(1);"/>
+<br>
+//封装了函数
+<input type="button" value="新石器点击我" onclick="fn()">
+<br>
+
+//名称：DOM0事件绑定
+
+//从此开始html标签中不再涉及任何javascript代码，也就是结构和功能分离
+<input type="button" value="夏商周时代点击我" id="btn"/>
+<br>
+
+//名称：IE事件绑定(IE11不支持)
+<input type="button" value="蛮夷入侵" id="btn2"/>
+
+<br>
+//名称：DOM2事件绑定
+<input type="button" value="回到了现代点击我" id="btn3"/>
+</body>
+<script>
+    function fn(){
+        alert(1);
+    }
+
+    var btn=document.getElementById("btn");
+    btn.onclick=function(){
+        alert("你还好吗？");
+    }
+
+
+
+    var btn2=document.getElementById("btn2");
+    btn2.attachEvent("onclick",function(){
+        alert("蛮夷要走了");
+    });
+
+//    var btn3=document.getElementById("btn3");
+//    btn3.addEventListener("click",function(){
+//        alert("How are u?");
+//    })
+</script>
+</html>

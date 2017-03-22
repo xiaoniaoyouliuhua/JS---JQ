@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<select name="" id="s1">
+    <option value="3">o1</option>
+    <option value="5">o2</option>
+    <option value="10">o3</option>
+</select>
+<select name="" id="s2">
+    <option value=""></option>
+    <option value=""></option>
+    <option value=""></option>
+</select>
+<input type="text"/>
+
+<input type="button" value="获取值" id="btn"/>
+<input type="button" value="设置值" id="btn2"/>
+<input type="checkbox" value="abc"/>
+<input type="radio" value="abcde"/>
+</body>
+<script src="jq.js"></script>
+<script>
+    jQuery.fn.extend({
+        val:function(value){
+            if(!value){
+                //获取第一个DOM元素的值
+                var firstDom=this.get(0);
+
+                //1、DOM元素是一个input标签
+                var nodeName=firstDom.nodeName.toLowerCase();
+                if(nodeName=="input"){
+                    return firstDom.value;
+                }else if(nodeName=="option"){
+                    return firstDom.value || firstDom.innerText;
+                }else if(nodeName=="select"){
+                    //判断是否是单选
+                    if(!firstDom.multiple){
+                        return firstDom.value;//选中的option的值
+                    }
+
+                    //多选：返回由多个选中的option的值组成的数组
+                    var result=[];
+                    var options=firstDom.getElementsByTagName("option");
+                    jQuery.each(options,function(i,option){
+                        //判断是否被选中
+                        if(option.selected){
+                            result.push(option.value || option.innerText);
+                        }
+                    });
+                    return result;
+                }
+            }
+
+
+            //设置值：
+            return this.each(function(){
+                var dom=this;
+                var nodeName=dom.nodeName.toLowerCase();
+                if(nodeName==="input"){
+                    if(dom.type==="checkbox" || dom.type==="radio"){
+                        //对于单选和复选框，只要设置的值与本身的值相等，就选中
+                        if(dom.value===value){
+                            dom.checked=true;
+                        }
+                    }else{
+                        dom.value=value;
+                    }
+
+
+                }else if(nodeName==="option"){
+                    dom.value=value;
+                }else if(nodeName==="select"){
+                    var isExist=false;
+
+                    var options=dom.getElementsByTagName("option");
+                    jQuery.each(options,function(i,option){
+                        if(option.value===value){
+                            option.selected=true;
+
+                            isExist=true;
+                        }
+                    });
+                    //表示select下面的option的值与设置的值都不匹配
+                    if(!isExist) dom.selectedIndex=-1;
+                }
+            });
+
+        }
+    });
+
+
+    var btn=$("#btn").get(0);
+    btn.onclick=function(){
+        alert($("select").val());
+        alert($("input").val());
+        alert($("option").val());//o1
+    }
+
+    var btn2=$("#btn2").get(0);
+    btn2.onclick=function(){
+        $("select").val("10");
+        $("input").val("abc");
+
+
+    }
+</script>
+</html>

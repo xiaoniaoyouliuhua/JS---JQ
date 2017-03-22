@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="a"></div>
+<div class="b"></div>
+<div class="c"></div>
+<div class="a b c d"></div>
+<div class="aa bb cc"></div>
+</body>
+<script src="jq.js"></script>
+<script>
+    jQuery.fn.extend({
+        //只要有一个元素存在指定的类名，就返回true
+        //如果每一个元素都不存在该类名，就返回false
+        hasClass: function (className) {
+            var isExist=false;
+            this.each(function () {//外层1循环-->遍历多个DOM元素
+                var dom = this;
+                //判断dom元素是否存在该类名
+                var classNames= dom.className.split(" ");
+
+                jQuery.each(classNames,function(i,v){//外层2循环-->遍历多个类名
+                    if(v===className){
+                        isExist=true;//找到了
+                        return false;//结束外层2循环
+                    }
+                });
+
+                if(isExist) return false;//终止外层1循环
+
+            });
+
+            return isExist;
+        }
+    })
+
+
+    console.log($("div").hasClass("c"));
+    console.log($("div").hasClass("abc"));
+</script>
+</html>

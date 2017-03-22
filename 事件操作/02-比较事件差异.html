@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="button" value="DOM0" id="btn"/>
+</body>
+<script>
+    //DOM0事件绑定
+    //优点：1、方便、简单
+    //     2、没有兼容性问题
+    //缺点：1、不能对相同元素进行多次同类型的事件绑定
+    btn.onclick=function(){
+        alert("")
+    };
+    btn.onclick=null;//取消
+
+    //IE事件绑定-->缺点：
+    //  只有IE11以下才能使用
+    //  事件回调函数内部this指向window
+    //  多次同类型的事件绑定按照绑定顺序倒序触发
+    //  事件类型名称携带on前缀
+
+    //DOM2事件绑定-->缺点：
+    //  不兼容<IE9的浏览器
+    //  事件回调函数内部this指向绑定该事件的DOM元素
+    //  多个同类型的事件绑定依次触发
+    //  事件类型名称不带on前缀
+    btn.addEventListener("click",function(){
+        alert(this);//指向btn
+    })
+
+    //共同的优点：可以对相同元素进行多次同类型的事件绑定
+
+</script>
+</html>

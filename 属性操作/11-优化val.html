@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<select name="" id="s1">
+    <option value="3">o1</option>
+    <option value="5">o2</option>
+    <option value="10">o3</option>
+</select>
+<select name="" id="s2">
+    <option value=""></option>
+    <option value=""></option>
+    <option value=""></option>
+</select>
+<input type="text"/>
+
+<input type="button" value="获取值" id="btn"/>
+<input type="button" value="设置值" id="btn2"/>
+<input type="checkbox" value="abc"/>
+<input type="radio" value="abcde"/>
+</body>
+<script src="jq.js"></script>
+<script>
+    jQuery.extend({
+        valHooks:{
+            input:{
+                get:function(dom){
+                    return dom.value;
+                },
+                set:function(dom,value){
+                    if(dom.type==="checkbox" || dom.type==="radio"){
+                        //对于单选和复选框，只要设置的值与本身的值相等，就选中
+                        if(dom.value===value){
+                            dom.checked=true;
+                        }
+                    }else{
+                        dom.value=value;
+                    }
+                }
+            },
+            option:{
+                get:function(dom){
+                    return dom.value || dom.innerText;
+                },
+                set:function(dom,value){
+                    dom.value=value;
+                }
+            },
+            select:{
+                get:function(dom){
+                    //判断是否是单选
+                    if(!dom.multiple){
+                        return dom.value;//选中的option的值
+                    }
+
+                    //多选：返回由多个选中的option的值组成的数组
+                    var result=[];
+                    var options=dom.getElementsByTagName("option");
+                    jQuery.each(options,function(i,option){
+                        //判断是否被选中
+                        if(option.selected){
+                            result.push(option.value || option.innerText);
+                        }
+                    });
+                    return result;
+                },
+                set:function(dom,value){
+                    var isExist=false;
+
+                    var options=dom.getElementsByTagName("option");
+                    jQuery.each(options,function(i,option){
+                        if(option.value===value){
+                            option.selected=true;
+
+                            isExist=true;
+                        }
+                    });
+                    //表示select下面的option的值与设置的值都不匹配
+                    if(!isExist) dom.selectedIndex=-1;
+                }
+            }
+        }
+    });
+
+    jQuery.fn.extend({
+        val:function(value){
+            if(!value){
+                var firstDom=this.get(0);
+                var nodeName=firstDom.nodeName.toLowerCase();//"input"
+                return jQuery.valHooks[nodeName].get(firstDom);
+            }
+
+            return this.each(function(){
+                var dom=this;
+                var nodeName=dom.nodeName.toLowerCase();//"input"
+                jQuery.valHooks[nodeName].set(dom,value);
+
+            })
+
+        }
+    });
+
+
+    var btn=$("#btn").get(0);
+    btn.onclick=function(){
+        alert($("select").val());
+        alert($("input").val());
+        alert($("option").val());//o1
+    }
+
+    var btn2=$("#btn2").get(0);
+    btn2.onclick=function(){
+        $("select").val("10");
+        $("input").val("abc");
+
+
+    }
+</script>
+</html>

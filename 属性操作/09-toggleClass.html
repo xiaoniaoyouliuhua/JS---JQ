@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="a"></div>  b c
+<div class="b"></div>  a c
+<div class="c b"></div> a
+<div class="a b c d"></div> d
+<div class="aa bb cc b d"></div> aa bb cc a c d
+
+</body>
+<script src="jq.js"></script>
+<script>
+    jQuery.fn.extend({
+        //只要有一个元素存在指定的类名，就返回true
+        //如果每一个元素都不存在该类名，就返回false
+        hasClass: function (className) {
+            var isExist = false;
+            this.each(function () {//外层1循环-->遍历多个DOM元素
+                var dom = this;
+
+                //要判断dom是否存在指定的类名
+                //类名的判定条件：
+                //1、该类名左边是字符串边界，右边是空格 class="a b"-->认为存在a类名
+                //2、左边是空格，右边是字符串边界，class="a b"-->认为存在b类名
+                //3、左右两边都是空格，class=" b "-->认为存在类名b
+
+                //如果给class属性的值补充一个空格，要判断dom是否存在该类名，那么必须左右两边都是空格
+                var domClassNameChange = " " + dom.className + " ";
+                var classNameChange = " " + className + " ";
+                if (domClassNameChange.indexOf(classNameChange) >= 0) {
+                    isExist = true;
+                    return false;
+                }
+
+            });
+
+            return isExist;
+        },
+
+        //要添加一个或者多个类名：$("div").addClass("a b c")
+        addClass: function (str) {
+            var classNames = str.split(" ");//分割成字符串数组，数组中保存每一个即将要添加的类名
+
+            return this.each(function () {
+                var dom = this;
+                //尝试要给dom添加类名-->首先要获取即将要添加的类名
+
+                jQuery.each(classNames, function (i, singleName) {
+                    //要判断dom元素是否存在该类名，存在就不用进行任何操作，不存在添加
+                    if (!jQuery(dom).hasClass(singleName)) {
+                        //如何给该DOM元素添加该类名-->映射到页面中
+                        //解决方案：获取dom元素的原来的class属性的值，然后进行尾部追加(追加之前需要补充空格)
+                        dom.className += " " + singleName;
+                    }
+                })
+
+            })
+
+        },
+
+        //删除一个或者多个类名：$("div").removeClass("a b c")
+        //无参：删除所有的类名
+        removeClass:function(str){
+            if(arguments.length===0){
+                //删除所有的类名
+                return this.each(function(){
+                    var dom=this;
+                    //删除该DOM元素的全部类名
+                    dom.className="";
+                })
+            }
+
+            var classNames=str.split(" ");
+            //实现功能：删除一个或者多个类名
+            return this.each(function(){
+                var dom=this;
+                //1、保存dom元素class属性的值
+                var domClassNameChange=" "+dom.className+" ";
+                //2、遍历获取每一个即将要删除的类名
+                jQuery.each(classNames,function(i,singleName){
+                    //3、处理每一个要删除的类名，添加前后空格
+                    var singleNameChange=" "+singleName+" ";
+                    //4、完成字符串替换
+                    domClassNameChange=domClassNameChange.replace(singleNameChange," ");
+                });
+                //5、此时的domClassNameChange就保存了最终的类名，重新设置给dom元素
+                dom.className=domClassNameChange;
+            });
+        },
+
+        //切换类名：$("div").toggleClass("a b c")
+        //如果DOM元素中存在该类名，就删除，反之就添加
+        toggleClass:function(str){
+            if(!jQuery.isString(str)) jQuery.error("传递一个字符串类型的参数");
+
+            var classNames=str.split(" ");
+
+            return this.each(function(){
+                var $dom=jQuery(this);
+
+                jQuery.each(classNames,function(i,singleName){
+                    //singleName就是每一个即将要切换的类名
+
+                    if($dom.hasClass(singleName)){
+                        $dom.removeClass(singleName);
+                    }else{
+                        $dom.addClass(singleName);
+                    }
+                })
+            })
+        },
+        toggleClass2:function(str){
+            if(!jQuery.isString(str)) jQuery.error("传递一个字符串类型的参数");
+
+            var classNames=str.split(" ");
+
+            return this.each(function(){
+                var $dom=jQuery(this);
+
+                jQuery.each(classNames,function(i,singleName){
+                    //singleName就是每一个即将要切换的类名
+
+                    $dom[$dom.hasClass(singleName)?"removeClass":"addClass"](singleName);
+
+//                    if($dom.hasClass(singleName)){
+//                        $dom.removeClass(singleName);
+//                    }else{
+//                        $dom.addClass(singleName);
+//                    }
+                })
+            })
+        }
+    });
+
+    $("div").toggleClass("a b c");
+</script>
+</html>

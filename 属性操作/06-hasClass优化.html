@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="a"></div>
+<div class="b"></div>
+<div class="c"></div>
+<div class="a b c d"></div>
+<div class="aa bb cc"></div>
+            " aa bb cc "-->"a" -->" a "
+            " aa bb cc "-->"aa" -->" aa "
+</body>
+<script src="jq.js"></script>
+<script>
+    jQuery.fn.extend({
+        //只要有一个元素存在指定的类名，就返回true
+        //如果每一个元素都不存在该类名，就返回false
+        hasClass: function (className) {
+            var isExist=false;
+            this.each(function () {//外层1循环-->遍历多个DOM元素
+                var dom = this;
+
+                //要判断dom是否存在指定的类名
+                //类名的判定条件：
+                //1、该类名左边是字符串边界，右边是空格 class="a b"-->认为存在a类名
+                //2、左边是空格，右边是字符串边界，class="a b"-->认为存在b类名
+                //3、左右两边都是空格，class=" b "-->认为存在类名b
+
+                //如果给class属性的值补充一个空格，要判断dom是否存在该类名，那么必须左右两边都是空格
+                var domClassNameChange=" "+dom.className+" ";
+                var classNameChange=" "+className+" ";
+                if(domClassNameChange.indexOf(classNameChange)>=0){
+                    isExist=true;
+                    return false;
+                }
+
+            });
+
+            return isExist;
+        }
+    })
+
+
+    console.log($("div").hasClass("c"));
+    console.log($("div").hasClass("abc"));
+</script>
+</html>
